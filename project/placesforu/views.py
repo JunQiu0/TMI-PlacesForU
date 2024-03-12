@@ -14,9 +14,9 @@ def index(request):
         if form.is_valid():
             name = form.cleaned_data.get("name")
             img = form.cleaned_data.get("image_field")
-            obj = UploadImageModel.objects.create(title=name,img=img)
+            obj = UploadImageModel.objects.create(title="imagen",img=img)
             obj.save()
-            print(obj)
+            print(img)
     else:
         form=UploadImageForm()
     context['form']=form

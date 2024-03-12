@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'placesforu',# Placesforu app,
-    'imageupload',
+    #'imageupload',
 ]
 
 MIDDLEWARE = [
