@@ -5,6 +5,6 @@ class PlacesforuConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'placesforu'
 
-class ImageuploadConfig(AppConfig):
+class ImageUploadConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'imageupload'

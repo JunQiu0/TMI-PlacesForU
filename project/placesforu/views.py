@@ -3,7 +3,7 @@ from django.http import HttpResponse
 import placesforu.APIs as api
 from django.template import Context
 from .forms import UploadImageForm
-from .models import UploadImageModel
+from imageupload.models import UploadImageModel
 # Create your views here.
 
 #Index page 
@@ -12,7 +12,7 @@ def index(request):
     if request.method=="POST":
         form = UploadImageForm(request.POST,request.FILES)
         if form.is_valid():
-            name = form.cleaned_data.get("name")
+            #name = form.cleaned_data.get("name")
             img = form.cleaned_data.get("image_field")
             obj = UploadImageModel.objects.create(title="imagen",img=img)
             obj.save()
