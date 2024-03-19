@@ -10,6 +10,7 @@ def get_landmark(image_path):
         "latitude": float,
         "longitude": float,
         "landmark": "string" (name of the landmark),
+        "score": "float" (confidence of the landmark detection)
     }
     '''
     coord = None    #Default coords
