@@ -32,6 +32,7 @@ def get_landmark(image_path):
             "latitude": landmarks[0].locations[0].lat_lng.latitude,
             "longitude": landmarks[0].locations[0].lat_lng.longitude,
             "landmark": landmarks[0].description,
+            "score": f"{landmarks[0].score:.2f}"
         }
 
     return coord
