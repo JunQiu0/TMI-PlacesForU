@@ -6,9 +6,12 @@
     <title>Index</title>
 </head>
 <body>
-    <p>This is a template.</p>
-    <iframe width="450" height="250" frameborder="0" style="border:0" referrerpolicy="no-referrer-when-downgrade"
-        src="{{src_map}}" allowfullscreen>
-    </iframe>
+    <!-- <p>This is a template.</p> -->
+       
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Submit">
+    </form>
 </body>
 </html>
