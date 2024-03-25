@@ -19,6 +19,7 @@ def index(request):
             obj = UploadImageModel(title="imagen", img=img)
             obj.save()
             print(f"Imagen guardada: {img.name}")
+            # Para prueba ./placesforu/test_resources/test.png
             return upload_image(request, f"images/{img.name}")
     else:
         form=UploadImageForm()
@@ -37,6 +38,6 @@ def upload_image(request, path):
     coords = None
     if img_data:
         coords = (img_data["latitude"], img_data["longitude"])
-    #coords = (2222, -1111) # Para pruebas
+    #coords = (40.45285938607549, -3.7336615037034977) # Para pruebas
     context = {"coords": coords}
     return render(request, "placesforu/coords.html", context)
