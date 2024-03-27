@@ -1,17 +1,42 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Index</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 90vh;
+            background-color: #019ac6;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Centra los elementos horizontalmente */
+        }
+        form {
+            display: flex; /* Para que los elementos dentro del formulario se alineen en una fila */
+            flex-wrap: wrap; /* Permite que los elementos se envuelvan a la siguiente línea si no hay suficiente espacio */
+            justify-content: center; /* Para centrar los elementos horizontalmente */
+            align-items: center; /* Para alinear los elementos verticalmente */
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
-    <!-- <p>This is a template.</p> -->
-       
-    <form method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" value="Submit">
-    </form>
+    <div class="container">
+        <img src="{% static 'logo.png' %}" alt="Logo" width="250" height="250">
+        
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="text" placeholder="Search.."> <!-- Movido aquí para que aparezca después de la imagen -->
+            {{ form.as_p }}
+            <input type="submit" value="Submit">
+        </form>
+    </div>
 </body>
 </html>

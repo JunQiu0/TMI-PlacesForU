@@ -22,7 +22,7 @@ def index(request):
             # Para prueba ./placesforu/test_resources/test.png
             return upload_image(request, f"images/{img.name}")
     else:
-        form=UploadImageForm()
+        form = UploadImageForm()
     context['form']=form
     return render(request, "placesforu/index.html", context)
 
