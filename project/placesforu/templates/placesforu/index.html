@@ -33,7 +33,7 @@
         
         <form method="POST" enctype="multipart/form-data">
             {% csrf_token %}
-            <input type="text" placeholder="Search.."> <!-- Movido aquí para que aparezca después de la imagen -->
+            <input type="text" placeholder="Paste image link"> <!-- Movido aquí para que aparezca después de la imagen -->
             {{ form.as_p }}
             <input type="submit" value="Submit">
         </form>
