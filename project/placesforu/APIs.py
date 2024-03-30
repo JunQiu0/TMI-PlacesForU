@@ -1,8 +1,9 @@
 from google.cloud import vision
 
-def get_landmark(image_path):
-    '''Given a route to a local image returns the location 
-    of the image (as a dict) or None otherwise. The server 
+def get_landmark(image_path, link = False):
+    '''Given a route to a local image or a link to a
+    remote image this method returns the location of
+    the image (as a dict) or None otherwise. The server 
     running must have a token for the google vision API.
     
     Structure of the dict:
@@ -19,10 +20,15 @@ def get_landmark(image_path):
     # Use google vision API to find location
     client = vision.ImageAnnotatorClient()
 
-    with open(path, "rb") as image_file:
-        content = image_file.read()
+    image = None
+    if link:
+        image = vision.Image()
+        image.source.image_uri = path
+    else:
+        with open(path, "rb") as image_file:
+            content = image_file.read()
+        image = vision.Image(content=content)
 
-    image = vision.Image(content=content)
     response = client.landmark_detection(image=image)
     landmarks = response.landmark_annotations
 
