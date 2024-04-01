@@ -43,14 +43,3 @@ def get_landmark(image_path, link = False):
         }
 
     return coord
-
-def get_map_src(latitude, longitude, zoom = 18, maptype = 1):
-    #Modo de mapa: view
-    #maptype : 0 roadmap / satellite
-    #API_KEY consulta Google Map platform
-    if maptype == 1:
-        maptype = "satellite"
-    else:
-        maptype = "roadmap"
-        
-    return f"https://www.google.com/maps/embed/v1/view?key={API_KEY}&center={latitude},{longitude}&zoom={zoom}&maptype={maptype}"
