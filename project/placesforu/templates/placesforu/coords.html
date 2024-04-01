@@ -9,13 +9,25 @@
         justify-content: center;
         align-items: center;
         min-height: 90vh;
-        background-color: #019ac6;
+        background-color: #019ac6 !important;
         flex-direction: column;
     }
     #map {
       height: 430px;
       width: 75%;
       margin-top: 30px;
+    }
+    .static_row {
+        top: 20px;
+        position: fixed;
+    }
+    .row {
+        width: 75%;
+    }
+    .col {
+        display: flex;
+        justify-content: center;
+        flex-wrap: nowrap;
     }
 </style>
 
@@ -25,12 +37,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="{% static 'js/map.js' %}"></script>
     <title>Localization</title>
+    {% load bootstrap5 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
 </head>
     <body>
         <!--The div element for the map -->
-
-        <img src="{% static 'logo-nobg.png' %}" alt="Logo" width="100" height="100">
-
+        <div class="row static_row">
+            <div class="col-2">
+                <button class="btn btn-outline-secondary" onclick='location.replace("http://127.0.0.1:8000/")'>Volver</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <img src="{% static 'logo-nobg.png' %}" alt="Logo" width="100" height="100">
+            </div>
+        </div>
+        <div class="row static_row" hidden>
+            <img src="{% static 'descarga_YP1eat9.jpeg' %}" alt="Logo" width="100" height="100">
+        </div>
         <div id="map"> No soy un mapa </div>
 
         <!-- Arranque Carga la API de Maps JavaScript, complete API_KEY -->
