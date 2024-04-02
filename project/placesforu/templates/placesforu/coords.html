@@ -1,39 +1,49 @@
 {% load static %}
+{% load l10n %}
 <!DOCTYPE html>
 
 <!-- map style -->
 <style>
+    body{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 90vh;
+        background-color: #019ac6;
+        flex-direction: column;
+    }
     #map {
       height: 400px;
-      width: 400px;
+      width: 75%;
+      margin-top: 40px;
     }
 </style>
 
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="{% static 'js/map.js' %}"></script>
-    <title>Index</title>
+    <title>Localization</title>
 </head>
     <body>
-        <h3>My Google Maps Demo</h3>
         <!--The div element for the map -->
 
         <span id="address"></span>
 
-        <div id="map"> Hola </div>
+        <img src="{% static 'logo.png' %}" alt="Logo" width="100" height="100">
 
-        <!-- Arranque Carga la API de Maps JavaScript -->
+        <div id="map"> No soy un mapa </div>
+
+        <!-- Arranque Carga la API de Maps JavaScript, complete API_KEY -->
         <script>(g=>{var h,a,k,p="The Google Maps JavaScript API",c="google",l="importLibrary",q="__ib__",m=document,b=window;b=b[c]||(b[c]={});var d=b.maps||(b.maps={}),r=new Set,e=new URLSearchParams,u=()=>h||(h=new Promise(async(f,n)=>{await (a=m.createElement("script"));e.set("libraries",[...r]+"");for(k in g)e.set(k.replace(/[A-Z]/g,t=>"_"+t[0].toLowerCase()),g[k]);e.set("callback",c+".maps."+q);a.src=`https://maps.${c}apis.com/maps/api/js?`+e;d[q]=f;a.onerror=()=>h=n(Error(p+" could not load."));a.nonce=m.querySelector("script[nonce]")?.nonce||"";m.head.append(a)}));d[l]?console.warn(p+" only loads once. Ignoring:",g):d[l]=(f,...n)=>r.add(f)&&u().then(()=>d[l](f,...n))})
             ({key: "API_KEY",v: "beta"});</script>
 
+        <!-- Use point separator -->
         <script>
-            initMap(40.45285938607549,-3.7336615037034977);
+            initMap({{coords.0|unlocalize}}, {{coords.1|unlocalize}});
         </script>
 
-        <p>This is a template that returns the coordinates -> {{ coords }}.</p>
+        <!-- <p>This is a template that returns the coordinates -> {{ coords.0 }} {{ coords.1 }}.</p> --> 
     </body>
 </html>
