@@ -1,9 +1,11 @@
 // Initialize and add the map
 let map;
 
-async function initMap(latitud, longitud) {
-  const position = { lat: latitud, lng: longitud };
-
+async function initMap() {
+  
+  const coords = JSON.parse(document.getElementById('coords').textContent);
+  const position = { lat: coords[0], lng: coords[1]};
+  
   // Request needed libraries.
   const { Map } = await google.maps.importLibrary("maps");
   const { AdvancedMarkerView } = await google.maps.importLibrary("marker");
@@ -22,16 +24,20 @@ async function initMap(latitud, longitud) {
     title: "Location",
   });
 
+  // The geocoder
   const geocoder = new google.maps.Geocoder();
 
   geocoder
     .geocode({ location: position })
     .then((response) => {
       if (response.results[0]) {
-        document.getElementById('address').textContent = response.results[1].formatted_address;
+        //document.getElementById('address').textContent = response.results[1].formatted_address;
 
       }
     })
     .catch((e) => window.alert("Geocoder failed due to: " + e));
 }
+
+initMap();
+
 
