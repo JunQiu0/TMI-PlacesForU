@@ -42,11 +42,15 @@
             height: 300px;
         }
         .border {
-            width: 385px;
+            width: 100%;
         }
         .field {
             display: flex;
             justify-content: center;
+            flex-wrap: wrap;
+            flex-direction: column;
+            align-content: space-between;
+            align-items: center;
         }
         .field-label {
             padding-left: 5px;
@@ -62,15 +66,8 @@
             <form method="POST" enctype="multipart/form-data">
                 {% csrf_token %}
                 <div class="border border-light rounded">
-                    <p class="field-label">Introduce una URL</p>
-                    <div class="field">
-                        <input type="text" placeholder="Pega una URL" style="width: 95%;"> <!-- Movido aquí para que aparezca después de la imagen -->
-                    </div>
-                </div>
-                <p>o</p>
-                <div class="border border-light rounded">
-                    <p class="field-label">Sube una imagen</p>
-                <!--<div class="row"> -->
+                    <!--<p class="field-label">Sube una imagen</p>
+                <div class="row"> -->
                     <div class="field">
                         {{ form.as_p }}
                     </div>
