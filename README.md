@@ -9,11 +9,21 @@
 
 Es recomentable usar Entorno Virtual de Python para evitar colisiones con las dependencias de otros proyectos de python, si los hubiera.
 
-## Algunos comando de utilidad:
+## Comandos de utilidad:
 
-Dentro de project: Para arrancar servidor de desarrollo local
+Dentro de project: 
 
-    python manage.py runserver
+Para arrancar servidor de desarrollo local
+
+    python manage.py runserver [port]
+
+Para generar migraciones (archivos que describen los cambios en la base de datos):
+
+    python manage.py makemigrations,
+
+Comando para aplicar migraciones:
+
+    python manage.py migrate
 
 
 
