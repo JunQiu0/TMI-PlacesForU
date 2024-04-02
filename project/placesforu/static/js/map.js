@@ -21,5 +21,17 @@ async function initMap(latitud, longitud) {
     position: position,
     title: "Location",
   });
+
+  const geocoder = new google.maps.Geocoder();
+
+  geocoder
+    .geocode({ location: position })
+    .then((response) => {
+      if (response.results[0]) {
+        document.getElementById('address').textContent = response.results[1].formatted_address;
+
+      }
+    })
+    .catch((e) => window.alert("Geocoder failed due to: " + e));
 }
 
