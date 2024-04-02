@@ -35,8 +35,13 @@
             padding-bottom: 50px;
         }
         p {
-            /* margin-bottom: 15px; */
-            margin-bottom: 0rem;
+            /* margin-bottom: 15px; 
+            margin-bottom: 0rem;*/
+            border-color: gray;
+            border: 2px;
+            border-style: double;
+            padding: 5px;
+            border-radius: 3px;
         }
         .row {
             height: 300px;
@@ -65,12 +70,10 @@
         <div class="row">
             <form method="POST" enctype="multipart/form-data">
                 {% csrf_token %}
-                <div class="border border-light rounded">
                     <!--<p class="field-label">Sube una imagen</p>
                 <div class="row"> -->
-                    <div class="field">
-                        {{ form.as_p }}
-                    </div>
+                <div class="field">
+                    {{ form.as_p }}
                 </div>
                 <!--<div class="row"> -->
                 <input class="btn btn-secondary" style="margin-top: 2px" type="submit" value="Enviar">
