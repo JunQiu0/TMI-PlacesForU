@@ -14,22 +14,27 @@ def index(request):
         form = UploadImageForm(request.POST, request.FILES)
         if form.is_valid():
             img = form.cleaned_data.get("image_field")
+            img_url = form.cleaned_data.get("image_url")
             # Replace spaces with underscores because the image name will be used as a path
-            img.name = img.name.replace(' ', '_')
-            obj = UploadImageModel(title="imagen", img=img)
-            obj.save()
-            print(f"Imagen guardada: {img.name}")
-            # Para prueba ./placesforu/test_resources/test.png
-            return upload_image(request, f"images/{img.name}")
+            if img:
+                img.name = img.name.replace(' ', '_')
+                obj = UploadImageModel(title="imagen", img=img)
+                obj.save()
+                print(f"Imagen guardada: {img.name}")
+                # Para prueba ./placesforu/test_resources/test.png
+                return upload_image(request, f"images/{img.name}", False)
+            else:
+                print(img_url)
+                return upload_image(request, img_url, True)
     else:
         form = UploadImageForm()
     context['form']=form
     return render(request, "placesforu/index.html", context)
 
-def upload_image(request, path):
+def upload_image(request, path, isURL):
     img_data = None
     try:
-        img_data = api.get_landmark(path)
+        img_data = api.get_landmark(path, link=isURL)
     except Exception as e:
         print(f"Error: {e}")
         img_data = None

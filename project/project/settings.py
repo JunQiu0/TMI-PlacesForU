@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'placesforu',# Placesforu app,
     'placesforu.apps.ImageUploadConfig',
+    'bootstrap5',
 ]
 
 MIDDLEWARE = [
