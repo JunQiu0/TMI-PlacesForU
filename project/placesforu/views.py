@@ -24,10 +24,15 @@ def index(request):
                 # Para prueba ./placesforu/test_resources/test.png
                 return upload_image(request, f"images/{img.name}", False)
             else:
-                print(img_url)
+                print(f"URL: {img_url}")
                 return upload_image(request, img_url, True)
-    else:
-        form = UploadImageForm()
+    elif request.method=="GET":
+        if "image_url" in request.GET: # GET request with image URL
+            print(f"URL: {request.GET.get('image_url')}")
+            img_url = request.GET.get("image_url")
+            return upload_image(request, img_url, True)
+        else: # Normal GET request
+            form = UploadImageForm()
     context['form']=form
     return render(request, "placesforu/index.html", context)
 
