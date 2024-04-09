@@ -30,6 +30,13 @@
         justify-content: center;
         flex-wrap: nowrap;
     }
+    #uploaded_img {
+        width: 200px;
+    }
+    .img_row {
+        display: flex;
+        justify-content: flex-end;
+    }
 </style>
 
 <html lang="es">
@@ -51,26 +58,28 @@
                 <button class="btn btn-outline-secondary" onclick='location.replace("/")'>Volver</button>
             </div>
         </div>
-        <div class="row">
+        <div class="row static_row">
             <div class="col">
                 <img src="{% static 'logo-nobg.png' %}" alt="Logo" width="100" height="100">
             </div>
         </div>
-        <div class="row static_row" hidden>
-            <img src="{% static 'descarga_YP1eat9.jpeg' %}" alt="Logo" width="100" height="100">
+        <div class="row static_row img_row" >
+            <img id="uploaded_img" src="" alt="Logo" width="100" height="100">
         </div>
 
         <div id="map"> No soy un mapa </div>
         {{ API_KEY|json_script:"API_KEY" }}
         <!-- Arranque Carga la API de Maps JavaScript, complete API_KEY -->
         <script>
+            document.getElementById("uploaded_img").src = decodeURI("{{ path|escapejs }}");
             const API_KEY = JSON.parse(document.getElementById('API_KEY').textContent);
             (g=>{var h,a,k,p="The Google Maps JavaScript API",c="google",l="importLibrary",q="__ib__",m=document,b=window;b=b[c]||(b[c]={});var d=b.maps||(b.maps={}),r=new Set,e=new URLSearchParams,u=()=>h||(h=new Promise(async(f,n)=>{await (a=m.createElement("script"));e.set("libraries",[...r]+"");for(k in g)e.set(k.replace(/[A-Z]/g,t=>"_"+t[0].toLowerCase()),g[k]);e.set("callback",c+".maps."+q);a.src=`https://maps.${c}apis.com/maps/api/js?`+e;d[q]=f;a.onerror=()=>h=n(Error(p+" could not load."));a.nonce=m.querySelector("script[nonce]")?.nonce||"";m.head.append(a)}));d[l]?console.warn(p+" only loads once. Ignoring:",g):d[l]=(f,...n)=>r.add(f)&&u().then(()=>d[l](f,...n))})
-            ({key: API_KEY, v: "beta"});</script>
+            ({key: API_KEY, v: "beta"});
+        </script>
 
         {{ coords|json_script:"coords" }}
         <!-- <p>This is a template that returns the coordinates -> {{ coords.0 }} {{ coords.1 }}.</p> --> 
         {% endblock section %}
     </body>
-   
+
 </html>
