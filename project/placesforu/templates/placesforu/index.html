@@ -124,6 +124,7 @@
 
     url_input.addEventListener('change', function() {
         // If file input is empty, set the preview to the URL input
+        imagePreview.alt = url_input.value;
         if (fileInput.files.length === 0)
             imagePreview.src = url_input.value;
     });
