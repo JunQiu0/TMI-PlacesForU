@@ -161,3 +161,6 @@ cython_debug/
 
 #Image directory of uploaded files
 images/
+
+#Config files
+config/
