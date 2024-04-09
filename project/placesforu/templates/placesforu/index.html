@@ -1,13 +1,16 @@
+{% extends "./base.html" %}
 {% load static %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
+    {% block styles %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Index</title>
     {% load bootstrap5 %}
     {% bootstrap_css %}
     {% bootstrap_javascript %}
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'favicon.ico' %}">
+    
     <style>
         body {
             display: flex;
@@ -61,8 +64,10 @@
             padding-left: 5px;
         }
     </style>
+    {% endblock %}
 </head>
 <body>
+    {% block section %} 
     <div class="container">
         <div class="row image">
             <img src="{% static 'logo-nobg.png' %}" alt="Logo" width="250" height="250">
@@ -81,7 +86,6 @@
             </form>
         </div>
     </div>
-    {% block content %}
-    {% endblock %}
+    {% endblock section %}
 </body>
 </html>
