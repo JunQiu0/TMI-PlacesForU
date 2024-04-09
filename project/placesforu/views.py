@@ -5,6 +5,7 @@ import placesforu.APIs as api
 from django.template import Context
 from .forms import UploadImageForm
 from imageupload.models import UploadImageModel
+from django.conf import settings
 # Create your views here.
 
 #Index page 
@@ -50,4 +51,5 @@ def upload_image(request, path, isURL):
         coords = (img_data["latitude"], img_data["longitude"])
     #coords = (40.45285938607549, -3.7336615037034977) # Para pruebas
     context = {"coords": coords}
+    context['API_KEY']= settings.API_KEY
     return render(request, "placesforu/coords.html", context)
