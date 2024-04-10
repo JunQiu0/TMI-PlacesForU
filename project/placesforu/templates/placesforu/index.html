@@ -77,6 +77,7 @@
                 <div class="row"> -->
                 <div class="field">
                     {{ form.as_p }}
+                    <img id="image_preview" alt="" style="max-width: 200px;" >
                 </div>
                 <!--<div class="row"> -->
                 <input class="btn btn-secondary" style="margin-top: 2px" type="submit" value="Enviar">
@@ -84,6 +85,48 @@
             </form>
         </div>
     </div>
+
+<!--input type="file" 
+    onchange="document.getElementById('blah').src = window.URL.createObjectURL(this.files[0])"
+    -->
+<script>
+    // Get a reference to the file input field
+    const fileInput = document.getElementById('id_image_field');
+    const imagePreview = document.getElementById('image_preview');
+
+    fileInput.addEventListener('change', function() {
+        imagePreview.src = url_input.value;
+        imagePreview.alt = url_input.value;
+        // Check if a file has been selected
+        if (fileInput.files.length > 0) {
+            // File has been uploaded
+            const file = fileInput.files[0];
+            if (file.type.startsWith('image/')) {
+                // File is an image
+                // Set the src attribute to the selected file
+                imagePreview.src = URL.createObjectURL(file);
+                imagePreview.alt = file.name;
+                // Add the <img> element to the image container
+                console.log('Selected file is an image');
+            } else {
+                // File is not an image
+                console.log('Selected file is not an image');
+            }
+        } else {
+            // No file selected
+            console.log('No file selected');
+        }
+    });
+
+    url_input = document.getElementById('id_image_url');
+
+    url_input.addEventListener('change', function() {
+        // If file input is empty, set the preview to the URL input
+        imagePreview.alt = url_input.value;
+        if (fileInput.files.length === 0)
+            imagePreview.src = url_input.value;
+    });
+</script>
     {% endblock section %}
 </body>
 </html>
