@@ -162,5 +162,7 @@ cython_debug/
 #Image directory of uploaded files
 images/
 
-#Config files
-/project/config
+# Ignore all in the directory /project/config
+/project/config/*
+# Except the file /project/config_template
+!/project/config/config_template.json
