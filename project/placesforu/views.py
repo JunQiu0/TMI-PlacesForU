@@ -19,11 +19,11 @@ def index(request):
             # Replace spaces with underscores because the image name will be used as a path
             if img:
                 img.name = img.name.replace(' ', '_')
+                # Store imagen path
                 obj = UploadImageModel(title="imagen", img=img)
                 obj.save()
-                print(f"Imagen guardada: {img.name}")
-                # Para prueba ./placesforu/test_resources/test.png
-                return upload_image(request, f"images/{img.name}", False)
+                print(f"Imagen guardada: {obj.img.name}")
+                return upload_image(request, obj, False)
             else:
                 print(f"URL: {img_url}")
                 return upload_image(request, img_url, True)
@@ -37,19 +37,18 @@ def index(request):
     context['form']=form
     return render(request, "placesforu/index.html", context)
 
-def upload_image(request, path, isURL):
+def upload_image(request, img_obj, isURL):
     img_data = None
     try:
-        img_data = api.get_landmark(path, link=isURL)
+        img_data = api.get_landmark(img_obj.img.path, link=isURL)
     except Exception as e:
         print(f"Error: {e}")
         img_data = None
-
+    img_obj.delete()
     # Create the context with the image data returned by the API
     coords = None
     if img_data:
         coords = (img_data["latitude"], img_data["longitude"])
-    #coords = (40.45285938607549, -3.7336615037034977) # Para pruebas
     context = {"coords": coords}
     context['API_KEY']= settings.API_KEY
     return render(request, "placesforu/coords.html", context)
