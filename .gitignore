@@ -163,4 +163,4 @@ cython_debug/
 images/
 
 #Config files
-config/
+/project/config
