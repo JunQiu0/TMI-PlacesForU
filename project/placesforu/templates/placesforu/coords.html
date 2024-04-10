@@ -17,6 +17,9 @@
       height: 430px;
       width: 75%;
       margin-top: 30px;
+      justify-content: center;
+      font-size:18px;
+      text-align: center;
     }
     .static_row {
         top: 20px;
@@ -60,7 +63,10 @@
             <img src="{% static 'descarga_YP1eat9.jpeg' %}" alt="Logo" width="100" height="100">
         </div>
 
-        <div id="map"> No soy un mapa </div>
+        <div id="map"> 
+            <p>La búsqueda no obtuvo ningún resultado. Intenta usar otro imagen.</p>
+            <img src="{% static 'failed.jpg' %}" box-sizing="content-box" height ="100%">
+        </div>
         {{ API_KEY|json_script:"API_KEY" }}
         <!-- Arranque Carga la API de Maps JavaScript, complete API_KEY -->
         <script>
