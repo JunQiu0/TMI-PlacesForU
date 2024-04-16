@@ -50,6 +50,6 @@ def upload_image(request, path, isURL):
     if img_data:
         coords = (img_data["latitude"], img_data["longitude"])
     #coords = (40.45285938607549, -3.7336615037034977) # Para pruebas
-    context = {"coords": coords}
+    context = {"coords": coords, "path": path}
     context['API_KEY']= settings.API_KEY
     return render(request, "placesforu/coords.html", context)
