@@ -160,7 +160,7 @@ cython_debug/
 #.idea/
 
 #Image directory of uploaded files
-images/
+/project/media
 
 # Ignore all in the directory /project/config
 /project/config/*

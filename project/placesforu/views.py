@@ -21,9 +21,9 @@ def index(request):
                 img.name = img.name.replace(' ', '_')
                 obj = UploadImageModel(title="imagen", img=img)
                 obj.save()
-                print(f"Imagen guardada: {img.name}")
+                print(f"Imagen guardada: {obj.img.url}")
                 # Para prueba ./placesforu/test_resources/test.png
-                return upload_image(request, f"images/{img.name}", False)
+                return upload_image(request, f"{obj.img.url}", False)
             else:
                 print(f"URL: {img_url}")
                 return upload_image(request, img_url, True)
