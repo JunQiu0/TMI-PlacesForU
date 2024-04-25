@@ -27,8 +27,9 @@ def index(request):
                 # Store imagen path
                 obj = UploadImageModel(title="imagen", img=img)
                 obj.save()
-                print(f"Imagen guardada: {obj.img.name}")
-                return upload_image(request, obj, False)
+                print(f"Imagen guardada: {obj.img.url}")
+                # Para prueba ./placesforu/test_resources/test.png
+                return upload_image(request, f"{obj.img.url}", False)
             else:
                 print(f"URL: {img_url}")
                 return upload_image(request, img_url, True)

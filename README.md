@@ -25,5 +25,10 @@ Para aplicar migraciones:
 
     python manage.py migrate
 
+## Plantilla de Configuración
+
+Dentro del directorio `config`, encontrarás un archivo de plantilla de configuración llamado `config_template.json`. Esta plantilla sirve como guía para configurar los ajustes del proyecto. 
+
+Es importante tener en cuenta que a partir de esta plantilla deberás crear un archivo `config.json` con tus configuraciones específicas en directorio `config`.
 
 
