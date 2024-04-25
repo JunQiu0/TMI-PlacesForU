@@ -7,11 +7,7 @@ from .forms import UploadImageForm
 from imageupload.models import UploadImageModel
 from django.conf import settings
 from .models import SearchCount
-# Create your views here.
-import plotly.express as px
-import plotly.io as pio
-import pandas as pd
-
+from . import utils
 
 #Index page 
 def index(request):
@@ -40,9 +36,12 @@ def index(request):
             return upload_image(request, img_url, True)
         else: # Normal GET request
             form = UploadImageForm()
-    fig_html = get_search_map()
     context['form']=form
+    # Lee el contenido de la plantilla
+    with open(settings.BASE_DIR /'placesforu/templates/placesforu/search_map.html', 'r') as file:
+        fig_html = file.read() 
     context['fig_html']=fig_html
+
     return render(request, "placesforu/index.html", context)
 
 def upload_image(request, img_url, isURL):
@@ -64,34 +63,3 @@ def upload_image(request, img_url, isURL):
     context['API_KEY']= settings.API_KEY
     return render(request, "placesforu/coords.html", context)
 
-# Auxiliary function
-def get_search_map():
-    df_country_counts = SearchCount.count_per_country()
-    # Caso de base de dato vacio
-    if df_country_counts.empty:
-        df_country_counts = pd.DataFrame({'country_iso3': ['ESP'], 'country': ['España'], 'total_count': [1], 'most_searched_city': ['Madrid']})
-
-    fig = px.choropleth(df_country_counts, locations='country_iso3',
-                        locationmode="ISO-3",
-                        color="total_count",
-                        hover_name="country",
-                        hover_data={"most_searched_city":True, "total_count":True,'country_iso3':False},
-                        color_continuous_scale=px.colors.sequential.Plasma,
-                        projection='orthographic',
-                        labels={'total_count': 'Número total de búsqueda', 
-                                'most_searched_city': 'Ciudad más buscada',},
-                        title='Search history')
-    # Poner transparencia en todos los lados
-    fig.update_layout(
-        paper_bgcolor='rgba(0,0,0,0)',
-        plot_bgcolor='rgba(0,0,0,0)',
-        geo=dict(bgcolor= 'rgba(0,0,0,0)')
-    )
-    # No mostrar leyenda de escala
-    fig.update(layout_coloraxis_showscale=False)
-    # Centralizar el titulo
-    fig.update_layout(title={'text': 'Search history', 'x': 0.5})
-    #Devuelve un html
-    return pio.to_html(fig, full_html=False)
-
-    
