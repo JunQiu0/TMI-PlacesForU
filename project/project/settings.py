@@ -132,3 +132,9 @@ with open('config/config.json') as config_file:
     config = json.load(config_file)
 
 API_KEY = config['API_KEY']
+
+#MEDIA_ROOT = "/Users/gemma/Documents/GitHub/TMI-PlacesForU/project/media/"
+MEDIA_ROOT = "../project/media/"
+MEDIA_URL = "media/"
+
+
