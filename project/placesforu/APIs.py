@@ -1,4 +1,6 @@
 from google.cloud import vision
+from geopy.geocoders import Nominatim
+import pycountry
 
 def get_landmark(image_path, link = False):
     '''Given a route to a local image or a link to a
@@ -43,3 +45,26 @@ def get_landmark(image_path, link = False):
         }
 
     return coord
+
+def get_country_city(latitude, longitude):
+    '''
+    Given the latitude and longitude, returns the country, 
+    its ISO3 code, and the city according to OSM through Nominatim. 
+    In case of failure, it returns none. 
+    '''
+    try:
+        geolocalizador = Nominatim(user_agent="placesforu")
+        location = geolocalizador.reverse((latitude, longitude), exactly_one=True, language='es')
+        country_eng = geolocalizador.reverse((latitude, longitude), exactly_one=True, language='en').raw['address'].get('country', '')
+        address = location.raw['address']
+        city = address.get('city', '')
+        country = address.get('country', '')
+        country_iso3 = pycountry.countries.lookup(country_eng).alpha_3
+    except Exception as e:
+        country_iso3 = None
+        country = None
+        city = None
+
+    return city, country, country_iso3
+
+
