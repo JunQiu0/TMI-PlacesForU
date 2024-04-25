@@ -29,7 +29,7 @@ def index(request):
                 obj.save()
                 print(f"Imagen guardada: {obj.img.url}")
                 # Para prueba ./placesforu/test_resources/test.png
-                return upload_image(request, f"{obj.img.url}", False)
+                return upload_image(request, f"{obj.img.path}", False)
             else:
                 print(f"URL: {img_url}")
                 return upload_image(request, img_url, True)
@@ -45,14 +45,14 @@ def index(request):
     context['fig_html']=fig_html
     return render(request, "placesforu/index.html", context)
 
-def upload_image(request, img_obj, isURL):
+def upload_image(request, img_url, isURL):
     img_data = None
     try:
-        img_data = api.get_landmark(img_obj.img.path, link=isURL)
+        img_data = api.get_landmark(img_url, link=isURL)
     except Exception as e:
         print(f"Error: {e}")
         img_data = None
-    img_obj.delete()
+    #img_obj.delete()
     # Create the context with the image data returned by the API
     coords = None
     if img_data:
