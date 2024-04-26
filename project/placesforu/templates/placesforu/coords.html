@@ -67,9 +67,10 @@
             </div>
         </div>
         <div class="row static_row img_row" >
-            <img id="uploaded_img" src="" alt="Logo" width="100" height="100">
+            <div class="col">
+                <img src="{{upload_image_url}}" alt="{{upload_image_url}}" width="100" height="100">
+            </div>
         </div>
-
         <div id="map"> 
             <p>La búsqueda no obtuvo ningún resultado. Intenta usar otro imagen.</p>
             <img src="{% static 'failed.jpg' %}" box-sizing="content-box" height ="100%">

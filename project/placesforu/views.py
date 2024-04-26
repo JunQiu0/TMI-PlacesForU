@@ -8,6 +8,7 @@ from imageupload.models import UploadImageModel
 from django.conf import settings
 from .models import SearchCount
 from . import utils
+import os
 
 #Index page 
 def index(request):
@@ -59,7 +60,12 @@ def upload_image(request, img_url, isURL):
         city, country, country_iso3= api.get_country_city(img_data["latitude"], img_data["longitude"])
         if city and country_iso3 and country:
             SearchCount.increment_count(city, country, country_iso3)
-    context = {"coords": coords}
+    if not isURL:
+        server_base_url = request.build_absolute_uri('/media/images')
+        upload_image_store_link = f"{server_base_url}/{os.path.basename(img_url)}"
+    else:
+        upload_image_store_link = img_url
+    context = {"coords": coords, "upload_image_url": upload_image_store_link}
     context['API_KEY']= settings.API_KEY
     return render(request, "placesforu/coords.html", context)
 
