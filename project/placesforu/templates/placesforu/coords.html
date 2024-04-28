@@ -69,24 +69,19 @@
             </div>
         </div>
         <div class="static_row img_row" >
-            <img src="{{upload_image_url}}" alt="{{upload_image_url}}" width="100" height="100">
+            <img src="{{upload_image_url}}" alt="{{upload_image_url}}" style="max-width: 200px; max-height: 175px;">
         </div>
-        <div id="map"> 
-            <p>La búsqueda no obtuvo ningún resultado. Intenta usar otro imagen.</p>
-            <img src="{% static 'failed.jpg' %}" box-sizing="content-box" height ="100%">
-        </div>
+        {% if coords %}
+            <div id="map"> </div>
+        {% else %}
+            <p class="img_row" style="text-align: center;margin-top: 150px;">La búsqueda no obtuvo ningún resultado. Intenta usar otra imagen.</p>
+            <img class=" img_row" src="{% static 'failed.jpg' %}" box-sizing="content-box" height ="500px">
+        {% endif %}
+        
         {{ API_KEY|json_script:"API_KEY" }}
-        <!-- Arranque Carga la API de Maps JavaScript, complete API_KEY -->
-        <script>
-            document.getElementById("uploaded_img").src = decodeURI("{{ path|escapejs }}");
-            const API_KEY = JSON.parse(document.getElementById('API_KEY').textContent);
-            (g=>{var h,a,k,p="The Google Maps JavaScript API",c="google",l="importLibrary",q="__ib__",m=document,b=window;b=b[c]||(b[c]={});var d=b.maps||(b.maps={}),r=new Set,e=new URLSearchParams,u=()=>h||(h=new Promise(async(f,n)=>{await (a=m.createElement("script"));e.set("libraries",[...r]+"");for(k in g)e.set(k.replace(/[A-Z]/g,t=>"_"+t[0].toLowerCase()),g[k]);e.set("callback",c+".maps."+q);a.src=`https://maps.${c}apis.com/maps/api/js?`+e;d[q]=f;a.onerror=()=>h=n(Error(p+" could not load."));a.nonce=m.querySelector("script[nonce]")?.nonce||"";m.head.append(a)}));d[l]?console.warn(p+" only loads once. Ignoring:",g):d[l]=(f,...n)=>r.add(f)&&u().then(()=>d[l](f,...n))})
-            ({key: API_KEY, v: "beta"});
-        </script>
-
+       
         {{ coords|json_script:"coords" }}
         <!-- <p>This is a template that returns the coordinates -> {{ coords.0 }} {{ coords.1 }}.</p> --> 
-        {% endblock section %}
     </body>
-
+{% endblock section %}
 </html>
