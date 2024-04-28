@@ -20,7 +20,7 @@ def get_search_map():
                         hover_data={"most_searched_city":True, "total_count":True,'country_iso3':False},
                         color_continuous_scale=px.colors.sequential.Plasma,
                         projection='orthographic',
-                        labels={'total_count': 'Número total de búsqueda', 
+                        labels={'total_count': 'Número total de búsquedas', 
                                 'most_searched_city': 'Ciudad más buscada',},
                         title='Search history')
     # Poner transparencia en todos los lados

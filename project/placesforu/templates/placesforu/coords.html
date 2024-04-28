@@ -74,10 +74,8 @@
         {% if coords %}
             <div id="map"> </div>
         {% else %}
-            <div class="static_row img_row" >
-                <p>La búsqueda no obtuvo ningún resultado. Intenta usar otro imagen.</p>
-                <img src="{% static 'failed.jpg' %}" box-sizing="content-box" height ="85%">
-            </div>
+            <p class="img_row" style="text-align: center;margin-top: 150px;">La búsqueda no obtuvo ningún resultado. Intenta usar otra imagen.</p>
+            <img class=" img_row" src="{% static 'failed.jpg' %}" box-sizing="content-box" height ="500px">
         {% endif %}
         
         {{ API_KEY|json_script:"API_KEY" }}
