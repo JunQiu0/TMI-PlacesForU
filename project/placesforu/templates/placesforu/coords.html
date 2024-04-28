@@ -71,10 +71,15 @@
         <div class="static_row img_row" >
             <img src="{{upload_image_url}}" alt="{{upload_image_url}}" width="100" height="100">
         </div>
-        <div id="map"> 
-            <p>La búsqueda no obtuvo ningún resultado. Intenta usar otro imagen.</p>
-            <img src="{% static 'failed.jpg' %}" box-sizing="content-box" height ="100%">
-        </div>
+        {% if coords %}
+            <div id="map"> </div>
+        {% else %}
+            <div class="static_row img_row" >
+                <p>La búsqueda no obtuvo ningún resultado. Intenta usar otro imagen.</p>
+                <img src="{% static 'failed.jpg' %}" box-sizing="content-box" height ="85%">
+            </div>
+        {% endif %}
+        
         {{ API_KEY|json_script:"API_KEY" }}
         <!-- Arranque Carga la API de Maps JavaScript, complete API_KEY -->
         <script>

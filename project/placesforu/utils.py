@@ -39,7 +39,7 @@ def get_search_map():
 def guardar_html():
     fig_html = get_search_map()
     # Guarda el HTML en un archivo
-    with open(settings.BASE_DIR /'placesforu/templates/placesforu/search_map.html', 'w') as file:
+    with open(settings.BASE_DIR /'placesforu/templates/placesforu/search_map.html', 'w', encoding='utf-8') as file:
         file.write(fig_html)
     print('search html updated')
 
