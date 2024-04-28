@@ -16,7 +16,7 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
         chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
             var currentIndex = tabs[0].index;
             chrome.tabs.create({
-                url: "http://192.168.1.177:8080/placesforu/?image_url=" + info.srcUrl,
+                url: "http://127.0.0.1:8000/placesforu/?image_url=" + info.srcUrl,
                 index: currentIndex + 1
             });
         });
