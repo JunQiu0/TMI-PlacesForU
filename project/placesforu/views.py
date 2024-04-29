@@ -8,6 +8,8 @@ from imageupload.models import UploadImageModel
 from django.conf import settings
 from .models import SearchCount
 from . import utils
+import csv, re, os, json, requests
+import numpy as np
 
 #Index page 
 def index(request):
@@ -54,12 +56,53 @@ def upload_image(request, img_url, isURL):
     #img_obj.delete()
     # Create the context with the image data returned by the API
     coords = None
+    nearest_cities = []
+    cities = []
+    coords = (52.072156, 4.221880) #PARA PRUEBAS, BORRAR
     if img_data:
         coords = (img_data["latitude"], img_data["longitude"])
-        city, country, country_iso3= api.get_country_city(img_data["latitude"], img_data["longitude"])
+        """ ¡¡¡¡¡¡DESCOMENTAR!!!!!!
+        city, country, country_iso3= api.get_country_city(img_data["latitude"], img_data["longitude"]) 
         if city and country_iso3 and country:
             SearchCount.increment_count(city, country, country_iso3)
-    context = {"coords": coords}
+        """
+    cities, nearest_cities = get_airports(coords) #METER EN EL IF
+    print(cities)
+    context = {"coords": coords, "path": img_url, "cities": cities, "nearest_cities": nearest_cities }
     context['API_KEY']= settings.API_KEY
     return render(request, "placesforu/coords.html", context)
 
+def get_airports(coords):
+    A = []
+    cities = []
+
+    print(coords)
+
+    with open(os.path.join(os.path.dirname(__file__), './static/airports.csv'), 'r') as archivo:
+        lector_csv = csv.DictReader(archivo)
+        for fila in lector_csv:
+            coordenadas = re.findall(r"[-+]?\d*\.\d+|\d+", fila["location"])
+            A.append((float(coordenadas[1]), float(coordenadas[0])))
+            cities.append(fila["city_code"])
+
+    A = np.array(A)
+    cities = np.array(cities)
+    leftbottom = np.array(coords)
+    distances = np.linalg.norm(A - leftbottom, axis=1)
+    min_indices = np.argsort(distances)[:10]
+    closest_points = A[min_indices]
+
+    print("Los 4 puntos más cercanos son:")
+    print(closest_points.tolist())
+    print(cities[min_indices].tolist())
+    print(distances[min_indices])
+
+    return cities[min_indices].tolist(), cities.tolist()
+
+def get_flights(request):
+    data = json.loads(request.body)
+    url = f"https://api.travelpayouts.com/v1/prices/cheap?origin={data['origin']}&destination={data['destination']}&depart_date={data['date']}&token=07baab25c478d0d653be62a8f1688a2c&currency=eur"
+    print(url)
+    api_response = requests.get(url)  # Realizar la petición GET
+    response = HttpResponse(api_response, content_type='application/json')
+    return response
