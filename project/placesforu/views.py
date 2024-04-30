@@ -39,8 +39,14 @@ def index(request):
             form = UploadImageForm()
     context['form']=form
     # Lee el contenido de la plantilla
-    with open(settings.BASE_DIR /'placesforu/templates/placesforu/search_map.html', 'r', encoding='utf-8') as file:
-        fig_html = file.read() 
+    try:
+        with open(settings.BASE_DIR /'placesforu/templates/placesforu/search_map.html', 'r', encoding='utf-8') as file:
+            fig_html = file.read() 
+    except FileNotFoundError as e:
+        print(e)
+        utils.guardar_html()
+        with open(settings.BASE_DIR /'placesforu/templates/placesforu/search_map.html', 'r', encoding='utf-8') as file:
+            fig_html = file.read() 
     context['fig_html']=fig_html
 
     return render(request, "placesforu/index.html", context)

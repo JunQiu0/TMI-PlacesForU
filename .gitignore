@@ -166,3 +166,6 @@ cython_debug/
 /project/config/*
 # Except the file /project/config_template
 !/project/config/config_template.json
+
+# Ignore search_map
+/project/placesforu/templates/placesforu/search_map.html
