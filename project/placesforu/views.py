@@ -1,6 +1,5 @@
 from django.shortcuts import render
 from django.shortcuts import redirect
-from django.http import HttpResponse
 import placesforu.APIs as api
 from django.template import Context
 from .forms import UploadImageForm
@@ -8,8 +7,9 @@ from imageupload.models import UploadImageModel
 from django.conf import settings
 from .models import SearchCount
 from . import utils
-import csv, re, os, json, requests
+import csv, re, os
 import numpy as np
+from django.contrib.sessions.backends.db import SessionStore
 
 #Index page 
 def index(request):
@@ -58,17 +58,17 @@ def upload_image(request, img_url, isURL):
     coords = None
     nearest_cities = []
     cities = []
-    coords = (52.072156, 4.221880) #PARA PRUEBAS, BORRAR
+    coords = (40.68942963488136, -74.04422823058648) #PARA PRUEBAS, BORRAR
     if img_data:
         coords = (img_data["latitude"], img_data["longitude"])
         """ ¡¡¡¡¡¡DESCOMENTAR!!!!!!
+        """
         city, country, country_iso3= api.get_country_city(img_data["latitude"], img_data["longitude"]) 
         if city and country_iso3 and country:
             SearchCount.increment_count(city, country, country_iso3)
-        """
-    cities, nearest_cities = get_airports(coords) #METER EN EL IF
+        cities, nearest_cities = get_airports(coords)
     print(cities)
-    context = {"coords": coords, "path": img_url, "cities": cities, "nearest_cities": nearest_cities }
+    context = {"coords": coords, "path": img_url, "cities": cities, "nearest_cities": nearest_cities}
     context['API_KEY']= settings.API_KEY
     return render(request, "placesforu/coords.html", context)
 
@@ -83,26 +83,18 @@ def get_airports(coords):
         for fila in lector_csv:
             coordenadas = re.findall(r"[-+]?\d*\.\d+|\d+", fila["location"])
             A.append((float(coordenadas[1]), float(coordenadas[0])))
-            cities.append(fila["city_code"])
+            cities.append(fila["code"])
 
     A = np.array(A)
     cities = np.array(cities)
     leftbottom = np.array(coords)
     distances = np.linalg.norm(A - leftbottom, axis=1)
-    min_indices = np.argsort(distances)[:10]
+    min_indices = np.where(distances < 1.0)
     closest_points = A[min_indices]
 
-    print("Los 4 puntos más cercanos son:")
+    print("Los puntos más cercanos son:")
     print(closest_points.tolist())
     print(cities[min_indices].tolist())
     print(distances[min_indices])
 
     return cities[min_indices].tolist(), cities.tolist()
-
-def get_flights(request):
-    data = json.loads(request.body)
-    url = f"https://api.travelpayouts.com/v1/prices/cheap?origin={data['origin']}&destination={data['destination']}&depart_date={data['date']}&token=07baab25c478d0d653be62a8f1688a2c&currency=eur"
-    print(url)
-    api_response = requests.get(url)  # Realizar la petición GET
-    response = HttpResponse(api_response, content_type='application/json')
-    return response

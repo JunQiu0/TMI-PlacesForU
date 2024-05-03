@@ -50,6 +50,18 @@
     #search_btn {
         padding-left: 20px;
     }
+    #flight_info {
+        width: 300%;
+    }
+    .first_col {
+        width: 80px !important;
+    }
+    .second_col {
+        width: 80px !important;
+    }
+    .card_row {
+        width: 100%;
+    }
 </style>
 
 <html lang="es">
@@ -102,22 +114,38 @@
                 </div> 
                 <table class="table">
                     <thead>
-                      <tr>
+                        <tr>
                         <th scope="col">Destino</th>
-                        <th scope="col">Fecha</th>
                         <th scope="col">Hora</th>
+                        <th scope="col">Duración</th>
                         <th scope="col">Precio</th>
-                      </tr>
+                        </tr>
                     </thead>
-                    <tbody>
-                      <tr>
+                    <tbody id="table_body">
+                       <!--  <tr>
                         <th scope="row">1</th>
                         <td>Mark</td>
                         <td>Otto tototototot</td>
                         <td>@mdo</td>
-                      </tr>
-                    </tbody>
-                  </table>
+                        </tr>-->
+                    </tbody> 
+                </table>
+                <!-- <div class="row search_input" id="flight_info">
+                    <div class="card w-50">
+                    <div class="card-body">
+                        <h5 class="card-title">Estocolmo</h5>
+                        <div class="row">
+                            <p class="card-text first_col"><b>Hora</b></p>18:30
+                            <p class="card-text second_col"><b>Aerolínea</b></p>18:30
+                        </div>
+                        <div class="row">
+                            <p class="card-text first_col"><b>Directo</b></p>NO
+                            <p class="card-text second_col"><b>Precio</b></p>250 €
+                        </div>
+
+                    </div>
+                    </div> 
+                </div> -->
             </div>
         </div>
         {{ API_KEY|json_script:"API_KEY" }}
@@ -138,38 +166,38 @@
 
             document.getElementById("uploaded_img").src = "/media" + decodeURI("{{ path|escapejs }}").split("media")[1];
             
-
-            function callback(response) {
-            // Aquí puedes procesar los datos recibidos en la respuesta del servidor
-                console.log(response);
-            }
-
             var search_btn = document.getElementById("search_btn");
             // Añade el manejador del evento de cambio de selección
             cities = JSON.parse(decodeURI("{{ cities|escapejs }}").replace(/'/g, '"'));
             var csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
             search_btn.addEventListener("click", function() {
             // Aquí puedes escribir el código que se ejecutará cuando cambie la selección
-                for (let i = 1; i < 2; i++) { //CAMBIAR A cities.length
-                    //xhr.open('GET', 'https://api.travelpayouts.com/v1/prices/cheap?origin=' + select.value + '&destination=' + cities[i] + '&depart_date=' + date.value + '&token=07baab25c478d0d653be62a8f1688a2c&currency=eur', true);
-                    data = {
-                        "origin": select.value,
-                        "destination": cities[i],
-                        "date": date.value
-                    };
-                    xhr.open("POST", "http://127.0.0.1:8000/get_flights/");
-                    xhr.setRequestHeader('X-CSRFToken', csrftoken);
-                    xhr.setRequestHeader("Content-Type", "application/json");
-                    //xhr.send(JSON.stringify(data));
-                }
+                //xhr.open('GET', 'https://api.travelpayouts.com/v1/prices/cheap?origin=' + select.value + '&destination=' + cities[i] + '&depart_date=' + date.value + '&token=07baab25c478d0d653be62a8f1688a2c&currency=eur', true);
+                data = {
+                    "origin": select.value,
+                    "possible_cities": cities,
+                    "date": date.value
+                };
+                xhr.open("POST", "http://127.0.0.1:8000/get_flights/"); //MIRAR LO DEL PUERTO
+                xhr.setRequestHeader('X-CSRFToken', csrftoken);
+                xhr.setRequestHeader("Content-Type", "application/json");
+                xhr.send(JSON.stringify(data));
             });
 
             var xhr = new XMLHttpRequest();
             xhr.onload = function() {
                 if (xhr.status >= 200 && xhr.status < 400) {
                     var data = JSON.parse(xhr.responseText);
+                    var table = document.getElementById("table_body");
                     // Aquí puedes trabajar con los datos obtenidos en la respuesta
                     console.log(data);
+                    table.innerHTML = ""; //Reset table
+                    for (flight of data) {
+                        console.log(flight)
+                        var segments = flight.itineraries[0].segments[0];
+                        table.innerHTML += '<tr><th scope="row">' + segments.arrival.iataCode + '</th><td>' + segments.departure.at.split("T")[1] + '</td><td>' 
+                        + segments.duration.split("T")[1] + '</td><td>' + flight.price.total + '</td></tr>';
+                    }
                 } else {
                     // Manejo de errores en caso de que la solicitud falle
                     console.error('Error:', xhr.status);
