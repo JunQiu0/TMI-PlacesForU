@@ -1,6 +1,5 @@
 from django.shortcuts import render
 from django.shortcuts import redirect
-from django.http import HttpResponse
 import placesforu.APIs as api
 from django.template import Context
 from .forms import UploadImageForm
@@ -8,7 +7,9 @@ from imageupload.models import UploadImageModel
 from django.conf import settings
 from .models import SearchCount
 from . import utils
-import os
+import csv, re, os
+import numpy as np
+from django.contrib.sessions.backends.db import SessionStore
 
 #Index page 
 def index(request):
@@ -61,9 +62,13 @@ def upload_image(request, img_url, isURL):
     #img_obj.delete()
     # Create the context with the image data returned by the API
     coords = None
+    nearest_cities = []
+    cities = []
+    city_names = []
+
     if img_data:
         coords = (img_data["latitude"], img_data["longitude"])
-        city, country, country_iso3= api.get_country_city(img_data["latitude"], img_data["longitude"])
+        city, country, country_iso3= api.get_country_city(img_data["latitude"], img_data["longitude"]) 
         if city and country_iso3 and country:
             SearchCount.increment_count(city, country, country_iso3)
     if not isURL:
@@ -71,7 +76,35 @@ def upload_image(request, img_url, isURL):
         upload_image_store_link = f"{server_base_url}/{os.path.basename(img_url)}"
     else:
         upload_image_store_link = img_url
-    context = {"coords": coords, "upload_image_url": upload_image_store_link}
+        
+    if coords:
+        cities, nearest_cities, city_names = get_airports(coords)
+
+    context = {"coords": coords, "path": img_url, "cities": cities,
+                "nearest_cities": nearest_cities, "city_names": city_names,
+                "upload_image_url": upload_image_store_link}
     context['API_KEY']= settings.API_KEY
     return render(request, "placesforu/coords.html", context)
 
+def get_airports(coords):
+    A = []
+    cities = []
+    city_names = []
+
+    print(coords)
+
+    with open(os.path.join(os.path.dirname(__file__), './static/airports.csv'), 'r', encoding='utf-8') as archivo:
+        lector_csv = csv.DictReader(archivo)
+        for fila in lector_csv:
+            coordenadas = re.findall(r"[-+]?\d*\.\d+|\d+", fila["location"])
+            A.append((float(coordenadas[1]), float(coordenadas[0])))
+            cities.append(fila["code"])
+            city_names.append(re.sub('[^a-zA-Z]', ' ', fila["name"]))
+
+    A = np.array(A)
+    cities = np.array(cities)
+    leftbottom = np.array(coords)
+    distances = np.linalg.norm(A - leftbottom, axis=1)
+    min_indices = np.where(distances < 1.0)
+
+    return cities[min_indices].tolist(), cities.tolist(), city_names
