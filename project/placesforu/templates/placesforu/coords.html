@@ -16,7 +16,7 @@
     #map {
       height: 430px;
       width: 100%;
-      margin-top: 130px;
+      margin-top: 200px;
       justify-content: center;
       font-size:18px;
       text-align: center;
@@ -34,7 +34,8 @@
         flex-wrap: nowrap;
     }
     #uploaded_img {
-        width: 200px;
+        height: 170px;
+        width: auto;
     }
     .img_row {
         display: flex;
@@ -115,8 +116,8 @@
             </div>
         </div>
 
-        <div class="row static_row img_row" >
-            <img src="{{upload_image_url}}" alt="{{upload_image_url}}" style="max-width: 200px; max-height: 175px;">
+        <div class="row static_row img_row">
+            <img id="uploaded_img" src="{{upload_image_url}}" alt="{{upload_image_url}}"> <!--style="max-width: 200px; max-height: 175px;"-->
         </div>
         
         {% if coords %}
