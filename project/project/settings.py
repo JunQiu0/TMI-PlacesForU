@@ -132,6 +132,8 @@ with open('config/config.json') as config_file:
     config = json.load(config_file)
 
 API_KEY = config['API_KEY']
+AMADEUS_CLIENT_ID = config['AMADEUS_CLIENT_ID']
+AMADEUS_SECRET = config['AMADEUS_SECRET']
 
 #MEDIA_ROOT = "/Users/gemma/Documents/GitHub/TMI-PlacesForU/project/media/"
 MEDIA_ROOT = "../project/media/"
