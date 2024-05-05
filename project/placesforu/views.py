@@ -58,43 +58,37 @@ def upload_image(request, img_url, isURL):
     coords = None
     nearest_cities = []
     cities = []
+    city_names = []
     coords = (40.68942963488136, -74.04422823058648) #PARA PRUEBAS, BORRAR
     if img_data:
         coords = (img_data["latitude"], img_data["longitude"])
-        """ ¡¡¡¡¡¡DESCOMENTAR!!!!!!
-        """
         city, country, country_iso3= api.get_country_city(img_data["latitude"], img_data["longitude"]) 
         if city and country_iso3 and country:
             SearchCount.increment_count(city, country, country_iso3)
-        cities, nearest_cities = get_airports(coords)
-    print(cities)
-    context = {"coords": coords, "path": img_url, "cities": cities, "nearest_cities": nearest_cities}
+        cities, nearest_cities, city_names = get_airports(coords)
+    context = {"coords": coords, "path": img_url, "cities": cities, "nearest_cities": nearest_cities, "city_names": city_names}
     context['API_KEY']= settings.API_KEY
     return render(request, "placesforu/coords.html", context)
 
 def get_airports(coords):
     A = []
     cities = []
+    city_names = []
 
     print(coords)
 
-    with open(os.path.join(os.path.dirname(__file__), './static/airports.csv'), 'r') as archivo:
+    with open(os.path.join(os.path.dirname(__file__), './static/airports.csv'), 'r', encoding='utf-8') as archivo:
         lector_csv = csv.DictReader(archivo)
         for fila in lector_csv:
             coordenadas = re.findall(r"[-+]?\d*\.\d+|\d+", fila["location"])
             A.append((float(coordenadas[1]), float(coordenadas[0])))
             cities.append(fila["code"])
+            city_names.append(re.sub('[^a-zA-Z]', ' ', fila["name"]))
 
     A = np.array(A)
     cities = np.array(cities)
     leftbottom = np.array(coords)
     distances = np.linalg.norm(A - leftbottom, axis=1)
     min_indices = np.where(distances < 1.0)
-    closest_points = A[min_indices]
 
-    print("Los puntos más cercanos son:")
-    print(closest_points.tolist())
-    print(cities[min_indices].tolist())
-    print(distances[min_indices])
-
-    return cities[min_indices].tolist(), cities.tolist()
+    return cities[min_indices].tolist(), cities.tolist(), city_names

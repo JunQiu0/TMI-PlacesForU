@@ -183,7 +183,7 @@ CYA,America/Port-au-Prince,Les Cayes,CYA,HT,POINT (-73.7919727086445 18.2700495)
 MFK,Asia/Taipei,Matsu Beigan Airport,MFK,TW,POINT (119.916664 26.166668),0,http://www.tsa.gov.tw/tsaMFK/en/page.aspx?id=1174,RCMT,Nangan,Lienchiang,Fukien
 MEW,Africa/Lubumbashi,Mweka,MEW,CD,POINT (21.542574619772104 -4.85500025),1856,,FZVM,Mweka,,Kasai-Occidental
 MFF,Africa/Libreville,Moanda,MFF,GA,POINT (13.253905585719252 -1.5279430999999999),1883,,FOOD,Moanda,,Haut-Ogooue
-SPK,Asia/Tokyo,Sapporo	Metropolitan Area,SPK,JP,POINT (41.3405138551 43.09367523914),3835,,,Sapporo,,Hokaido
+SPK,Asia/Tokyo,Sapporo,SPK,JP,POINT (41.3405138551 43.09367523914),3835,,,Sapporo,,Hokaido
 YVM,America/Pangnirtung,Qikiqtarjuaq,YVM,CA,POINT (-63.833332 67.583336),21,,CYVM,,,
 MFS,America/Bogota,Miraflores,MFS,CO,POINT (-73.25 5.166667),10387,,SKMF,Miraflores,,Boyaca
 MFT,America/Lima,Machu Picchu,MFT,PE,POINT (-72.566666 -13.116667),9767,,,Santa Teresa,Provincia de La Convencion,Cusco
@@ -243,7 +243,7 @@ EYP,America/Bogota,El Yopal Airport,EYP,CO,POINT (-72.38447809054335 5.3201424),
 EYW,America/New_York,Key West International Airport,EYW,US,POINT (-81.75961603475078 24.5554773),16,,KEYW,Stock Island,Monroe County,Florida
 EZE,America/Argentina/Buenos_Aires,Ministro Pistarini Airport,BUE,AR,POINT (-58.54742335052262 -34.81681415),65,http://www.aa2000.com.ar/index.php,SAEZ,Ezeiza,Partido de Ezeiza,Buenos Aires
 HCZ,Asia/Shanghai,Chenzhou Beihu Airport,HCZ,CN,POINT (112.84966005166282 25.75482855),1059,,ZGCZ,Chenzhou,,Hunan
-SDZ,Europe/London,Shetland Islands	Metropolitan Area,SDZ,GB,POINT (-1.26169442216 60.31724307915),528,,,,,
+SDZ,Europe/London,Shetland Islands,SDZ,GB,POINT (-1.26169442216 60.31724307915),528,,,,,
 BVD,America/Nome,Sea Port,BVD,US,POINT (-166.31667 53.733334),0,,,,,
 MLH,Europe/Zurich,EuroAirport Basel-Mulhouse-Freiburg,EAP,CH,POINT (7.52434812773247 47.603236949999996),853,,,Hesingue,Departement du Haut-Rhin,Alsace
 ZST,America/Vancouver,Stewart,ZST,CA,POINT (-129.98266963141435 55.9356393),24,,CZST,,,

@@ -15,8 +15,8 @@
     }
     #map {
       height: 430px;
-      width: 75%;
-      margin-top: 30px;
+      width: 100%;
+      margin-top: 130px;
       justify-content: center;
       font-size:18px;
       text-align: center;
@@ -41,11 +41,12 @@
         justify-content: flex-end;
     }
     #cities_div {
-        margin-top: 30px;
+        margin-top: 40px;
     }
     .search_input {
         display: flex;
         flex-wrap: nowrap !important;
+        align-items: center;
     }
     #search_btn {
         padding-left: 20px;
@@ -59,8 +60,17 @@
     .second_col {
         width: 80px !important;
     }
-    .card_row {
-        width: 100%;
+    #flight_date {
+        width: 160px !important;
+    }
+    label {
+        width: 80px !important;
+    }
+    .btn{
+        width: fit-content !important;
+    }
+    .selectize-input {
+        width: 330px !important;
     }
 </style>
 
@@ -70,6 +80,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script type="module" src="{% static 'js/map.js' %}"></script>
     <title>PlacesForU</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.15.2/css/selectize.default.min.css"
+    integrity="sha512-pTaEn+6gF1IeWv3W1+7X7eM60TFu/agjgoHmYhAfLEU8Phuf6JKiiE8YmsNC0aCgQv4192s4Vai8YZ6VNM6vyQ=="
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+    />
+    <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.15.2/js/selectize.min.js"
+    integrity="sha512-IOebNkvA/HZjMM7MxL0NYeLYEalloZ8ckak+NDtOViP7oiYzG5vn6WVXyrJDiJPhl4yRdmNAG49iuLmhkUdVsQ=="
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+    ></script>
     {% load bootstrap5 %}
     {% bootstrap_css %}
     {% bootstrap_javascript %}
@@ -78,7 +102,7 @@
     <body>
         {% block section %} 
         <!--The div element for the map -->
-        <div class="row static_row" style="z-index: 100;">
+        <div class="row static_row" id="back_btn_div" style="z-index: 100;">
             <div class="col-2">
                 <button class="btn btn-outline-secondary" onclick='location.replace("/")'>Volver</button>
             </div>
@@ -93,59 +117,36 @@
         </div>
 
         <div class="row">
-            <div id="map" class="col-9"> 
+            <div id="map"  style="z-index: 101;"> 
                 <p>La búsqueda no obtuvo ningún resultado. Intenta usar otro imagen.</p>
                 <img src="{% static 'failed.jpg' %}" box-sizing="content-box" height ="100%">
             </div>
-            <div class="col-3" id="cities_div">
-                <h1>Busca vuelos</h1>
-                <div class="row search_input">
+        </div>
+
+        <div>
+            <div id="cities_div">
+                <h1 style="margin-bottom: 0px;">Busca vuelos</h1>
+                <div class="search_input"><!--row--> 
                     <label for="flight_date">Fecha:</label>
-                    <input type="date" id="flight_date">
+                    <input class="form-select" type="date" id="flight_date">
+                    <label for="cities" style="margin-left: 5px;">Origen:</label>
+                    <select id="cities"></select>
+                    <button id="search_btn" class="btn btn-secondary">Buscar</button>
                 </div>
-                <div class="row search_input">
-                    <label for="cities">Origen:</label>
-                    <select class="form-select" id="cities"></select>
-                </div>
-                <div class="row search_input" id="search_btn">
-                    <!-- <div class="col-2"></div> -->
-                    <button class="btn btn-secondary">Buscar</button>
-                    <!-- <div class="col-2"></div> -->
-                </div> 
                 <table class="table">
                     <thead>
                         <tr>
+                        <th scope="col">Código</th>
                         <th scope="col">Destino</th>
                         <th scope="col">Hora</th>
                         <th scope="col">Duración</th>
+                        <th scope="col">Plazas libres</th>
                         <th scope="col">Precio</th>
                         </tr>
                     </thead>
                     <tbody id="table_body">
-                       <!--  <tr>
-                        <th scope="row">1</th>
-                        <td>Mark</td>
-                        <td>Otto tototototot</td>
-                        <td>@mdo</td>
-                        </tr>-->
                     </tbody> 
                 </table>
-                <!-- <div class="row search_input" id="flight_info">
-                    <div class="card w-50">
-                    <div class="card-body">
-                        <h5 class="card-title">Estocolmo</h5>
-                        <div class="row">
-                            <p class="card-text first_col"><b>Hora</b></p>18:30
-                            <p class="card-text second_col"><b>Aerolínea</b></p>18:30
-                        </div>
-                        <div class="row">
-                            <p class="card-text first_col"><b>Directo</b></p>NO
-                            <p class="card-text second_col"><b>Precio</b></p>250 €
-                        </div>
-
-                    </div>
-                    </div> 
-                </div> -->
             </div>
         </div>
         {{ API_KEY|json_script:"API_KEY" }}
@@ -153,17 +154,27 @@
         <!-- Arranque Carga la API de Maps JavaScript, complete API_KEY -->
         <script>
             opciones = JSON.parse(decodeURI("{{ nearest_cities|escapejs }}").replace(/'/g, '"'));
+            textos = JSON.parse(decodeURI("{{ city_names|escapejs }}").replace(/'/g, '"'));
             select = document.getElementById("cities");
             for (var i = 0; i < opciones.length; i++) {
                 var option = document.createElement("option");
                 option.value = opciones[i];
-                option.text = opciones[i];
+                option.text = textos[i];
                 select.appendChild(option);
             }
-            select.value = "MAD";
-            date = document.getElementById("flight_date");
-            console.log(date.value)
+            selectize = $('#cities').selectize({
+                create: true,
+                sortField: 'text',
+                searchField: 'text',
+                create: function(input) {
+                    return {
+                        value: input,
+                        text: input
+                    }
+                }
+            });
 
+            date = document.getElementById("flight_date");
             document.getElementById("uploaded_img").src = "/media" + decodeURI("{{ path|escapejs }}").split("media")[1];
             
             var search_btn = document.getElementById("search_btn");
@@ -172,16 +183,20 @@
             var csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
             search_btn.addEventListener("click", function() {
             // Aquí puedes escribir el código que se ejecutará cuando cambie la selección
-                //xhr.open('GET', 'https://api.travelpayouts.com/v1/prices/cheap?origin=' + select.value + '&destination=' + cities[i] + '&depart_date=' + date.value + '&token=07baab25c478d0d653be62a8f1688a2c&currency=eur', true);
-                data = {
-                    "origin": select.value,
-                    "possible_cities": cities,
-                    "date": date.value
-                };
-                xhr.open("POST", "http://127.0.0.1:8000/get_flights/"); //MIRAR LO DEL PUERTO
-                xhr.setRequestHeader('X-CSRFToken', csrftoken);
-                xhr.setRequestHeader("Content-Type", "application/json");
-                xhr.send(JSON.stringify(data));
+                if (date.value != "") {
+                    data = {
+                        "origin": select.value,
+                        "possible_cities": cities,
+                        "date": date.value
+                    };
+                    xhr.open("POST", "http://127.0.0.1:8000/get_flights/");
+                    xhr.setRequestHeader('X-CSRFToken', csrftoken);
+                    xhr.setRequestHeader("Content-Type", "application/json");
+                    xhr.send(JSON.stringify(data));
+                }
+                else {
+                    alert("No se ha seleccionado una fecha");
+                }
             });
 
             var xhr = new XMLHttpRequest();
@@ -189,14 +204,13 @@
                 if (xhr.status >= 200 && xhr.status < 400) {
                     var data = JSON.parse(xhr.responseText);
                     var table = document.getElementById("table_body");
-                    // Aquí puedes trabajar con los datos obtenidos en la respuesta
-                    console.log(data);
                     table.innerHTML = ""; //Reset table
                     for (flight of data) {
                         console.log(flight)
                         var segments = flight.itineraries[0].segments[0];
-                        table.innerHTML += '<tr><th scope="row">' + segments.arrival.iataCode + '</th><td>' + segments.departure.at.split("T")[1] + '</td><td>' 
-                        + segments.duration.split("T")[1] + '</td><td>' + flight.price.total + '</td></tr>';
+                        table.innerHTML += '<tr><th scope="row">' + segments.carrierCode + segments.number + '</th><td>' + segments.arrival.iataCode + '</td><td>' 
+                        + segments.departure.at.split("T")[1] + '</td><td>' + segments.duration.split("T")[1] + '</td><td>' + flight.numberOfBookableSeats + '</td><td>' 
+                        + flight.price.total + ' €</td></tr>';
                     }
                 } else {
                     // Manejo de errores en caso de que la solicitud falle

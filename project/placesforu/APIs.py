@@ -77,6 +77,7 @@ def get_flights(request):
     api_response = None
     #print(request.session["amadeus_token"])
     #for i in range(len(data["possible_cities"])):
+    request.session["amadeus_token"] = generate_token()
     while not found and i < len(data['possible_cities']):
         headers = {
             'Authorization': f'Bearer {request.session["amadeus_token"]}'
@@ -97,7 +98,7 @@ def get_flights(request):
                     flights.append(flight)
                 #found = True
         i = i + 1
-        time.sleep(0.4)
+        time.sleep(0.6)
     json_data = json.dumps(flights) #Return empty array if no flights have been found
     response = HttpResponse(json_data, content_type='application/json')
     return response
