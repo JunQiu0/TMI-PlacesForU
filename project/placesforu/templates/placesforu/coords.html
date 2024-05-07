@@ -1,0 +1,238 @@
+{% extends "./base.html" %}
+{% load static %}
+{% load l10n %}
+<!DOCTYPE html>
+{% block styles %}
+<!-- map style -->
+<style>
+    body{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 90vh;
+        background-color: #019ac6 !important;
+        flex-direction: column;
+    }
+    #map {
+      height: 430px;
+      width: 100%;
+      margin-top: 200px;
+      justify-content: center;
+      font-size:18px;
+      text-align: center;
+    }
+    .static_row {
+        top: 20px;
+        position: fixed;
+    }
+    .row {
+        width: 75%;
+    }
+    .col {
+        display: flex;
+        justify-content: center;
+        flex-wrap: nowrap;
+    }
+    #uploaded_img {
+        height: 170px;
+        width: auto;
+    }
+    .img_row {
+        display: flex;
+        justify-content: flex-end;
+        top: 20px;
+        right: 15%;
+    }
+    #cities_div {
+        margin-top: 40px;
+    }
+    .search_input {
+        display: flex;
+        flex-wrap: nowrap !important;
+        align-items: center;
+    }
+    #search_btn {
+        padding-left: 20px;
+    }
+    #flight_info {
+        width: 300%;
+    }
+    .first_col {
+        width: 80px !important;
+    }
+    .second_col {
+        width: 80px !important;
+    }
+    #flight_date {
+        width: 160px !important;
+    }
+    label {
+        width: 80px !important;
+    }
+    .btn{
+        width: fit-content !important;
+    }
+    .selectize-input {
+        width: 330px !important;
+    }
+</style>
+
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script type="module" src="{% static 'js/map.js' %}"></script>
+    <title>PlacesForU</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.15.2/css/selectize.default.min.css"
+    integrity="sha512-pTaEn+6gF1IeWv3W1+7X7eM60TFu/agjgoHmYhAfLEU8Phuf6JKiiE8YmsNC0aCgQv4192s4Vai8YZ6VNM6vyQ=="
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+    />
+    <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.15.2/js/selectize.min.js"
+    integrity="sha512-IOebNkvA/HZjMM7MxL0NYeLYEalloZ8ckak+NDtOViP7oiYzG5vn6WVXyrJDiJPhl4yRdmNAG49iuLmhkUdVsQ=="
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+    ></script>
+    {% load bootstrap5 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+</head>
+{% endblock %}
+    <body>
+        {% block section %} 
+        <!--The div element for the map -->
+        <div class="row static_row" id="back_btn_div" style="z-index: 100;">
+            <div class="col-2">
+                <button class="btn btn-outline-secondary" onclick='location.replace("/")'>Volver</button>
+            </div>
+        </div>
+        <div class="row static_row">
+            <div class="col">
+                <img src="{% static 'logo-nobg.png' %}" alt="Logo" width="100" height="100">
+            </div>
+        </div>
+
+        <div class="row static_row img_row">
+            <img id="uploaded_img" src="{{upload_image_url}}" alt="{{upload_image_url}}"> <!--style="max-width: 200px; max-height: 175px;"-->
+        </div>
+        
+        {% if coords %}
+        <div id="map"> </div>
+        {% else %}
+        <p class="img_row" style="text-align: center;margin-top: 150px;">La búsqueda no obtuvo ningún resultado. Intenta usar otra imagen.</p>
+        <img class=" img_row" src="{% static 'failed.jpg' %}" box-sizing="content-box" height ="500px">
+        {% endif %}
+
+        {% if coords %}
+        <div>
+            <div id="cities_div">
+                <h1 style="margin-bottom: 0px;">Busca vuelos</h1>
+                <div class="search_input"><!--row--> 
+                    <label for="flight_date">Fecha:</label>
+                    <input class="form-select" type="date" id="flight_date">
+                    <label for="cities" style="margin-left: 5px;">Origen:</label>
+                    <select id="cities"></select>
+                    <button id="search_btn" class="btn btn-secondary">Buscar</button>
+                </div>
+                <table class="table">
+                    <thead>
+                        <tr>
+                        <th scope="col">Código</th>
+                        <th scope="col">Destino</th>
+                        <th scope="col">Hora</th>
+                        <th scope="col">Duración</th>
+                        <th scope="col">Plazas libres</th>
+                        <th scope="col">Precio</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table_body">
+                    </tbody> 
+                </table>
+            </div>
+        </div>
+        {% endif %}
+
+        
+        {{ API_KEY|json_script:"API_KEY" }}
+        {% csrf_token %}
+        <!-- Arranque Carga la API de Maps JavaScript, complete API_KEY -->
+        <script>
+            opciones = JSON.parse(decodeURI("{{ nearest_cities|escapejs }}").replace(/'/g, '"'));
+            textos = JSON.parse(decodeURI("{{ city_names|escapejs }}").replace(/'/g, '"'));
+            select = document.getElementById("cities");
+            for (var i = 0; i < opciones.length; i++) {
+                var option = document.createElement("option");
+                option.value = opciones[i];
+                option.text = textos[i];
+                select.appendChild(option);
+            }
+            selectize = $('#cities').selectize({
+                create: true,
+                sortField: 'text',
+                searchField: 'text',
+                create: function(input) {
+                    return {
+                        value: input,
+                        text: input
+                    }
+                }
+            });
+
+            date = document.getElementById("flight_date");
+            //document.getElementById("uploaded_img").src = "/media" + decodeURI("{{ path|escapejs }}").split("media")[1];
+            
+            var search_btn = document.getElementById("search_btn");
+            // Añade el manejador del evento de cambio de selección
+            cities = JSON.parse(decodeURI("{{ cities|escapejs }}").replace(/'/g, '"'));
+            var csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+            search_btn.addEventListener("click", function() {
+            // Aquí puedes escribir el código que se ejecutará cuando cambie la selección
+                if (date.value != "") {
+                    data = {
+                        "origin": select.value,
+                        "possible_cities": cities,
+                        "date": date.value
+                    };
+                    xhr.open("POST", "http://127.0.0.1:8000/get_flights/");
+                    xhr.setRequestHeader('X-CSRFToken', csrftoken);
+                    xhr.setRequestHeader("Content-Type", "application/json");
+                    xhr.send(JSON.stringify(data));
+                }
+                else {
+                    alert("No se ha seleccionado una fecha");
+                }
+            });
+
+            var xhr = new XMLHttpRequest();
+            xhr.onload = function() {
+                if (xhr.status >= 200 && xhr.status < 400) {
+                    var data = JSON.parse(xhr.responseText);
+                    var table = document.getElementById("table_body");
+                    table.innerHTML = ""; //Reset table
+                    for (flight of data) {
+                        console.log(flight)
+                        var segments = flight.itineraries[0].segments[0];
+                        table.innerHTML += '<tr><th scope="row">' + segments.carrierCode + segments.number + '</th><td>' + segments.arrival.iataCode + '</td><td>' 
+                        + segments.departure.at.split("T")[1] + '</td><td>' + segments.duration.split("T")[1] + '</td><td>' + flight.numberOfBookableSeats + '</td><td>' 
+                        + flight.price.total + ' €</td></tr>';
+                    }
+                } else {
+                    // Manejo de errores en caso de que la solicitud falle
+                    console.error('Error:', xhr.status);
+                }
+            };
+            
+            const API_KEY = JSON.parse(document.getElementById('API_KEY').textContent);
+            (g=>{var h,a,k,p="The Google Maps JavaScript API",c="google",l="importLibrary",q="__ib__",m=document,b=window;b=b[c]||(b[c]={});var d=b.maps||(b.maps={}),r=new Set,e=new URLSearchParams,u=()=>h||(h=new Promise(async(f,n)=>{await (a=m.createElement("script"));e.set("libraries",[...r]+"");for(k in g)e.set(k.replace(/[A-Z]/g,t=>"_"+t[0].toLowerCase()),g[k]);e.set("callback",c+".maps."+q);a.src=`https://maps.${c}apis.com/maps/api/js?`+e;d[q]=f;a.onerror=()=>h=n(Error(p+" could not load."));a.nonce=m.querySelector("script[nonce]")?.nonce||"";m.head.append(a)}));d[l]?console.warn(p+" only loads once. Ignoring:",g):d[l]=(f,...n)=>r.add(f)&&u().then(()=>d[l](f,...n))})
+            ({key: API_KEY, v: "beta"});
+        </script>
+
+        {{ coords|json_script:"coords" }}
+        <!-- <p>This is a template that returns the coordinates -> {{ coords.0 }} {{ coords.1 }}.</p> --> 
+    </body>
+{% endblock section %}
+</html>

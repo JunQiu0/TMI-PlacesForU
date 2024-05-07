@@ -1,0 +1,144 @@
+{% extends "./base.html" %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    {% block styles %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% load bootstrap5 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}    
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 90vh;
+            background-color: #019ac6;
+            color: gainsboro;
+        }
+        .container {
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Centra los elementos horizontalmente */
+        }
+        form {
+            display: flex; /* Para que los elementos dentro del formulario se alineen en una fila */
+            flex-wrap: wrap; /* Permite que los elementos se envuelvan a la siguiente línea si no hay suficiente espacio */
+            justify-content: start; 
+            align-items: center; /* Para alinear los elementos verticalmente */
+            /*margin-top: 20px;*/
+            flex-direction: column;
+        }
+        .image {
+            padding-bottom: 50px;
+        }
+        p {
+            /* margin-bottom: 15px; 
+            margin-bottom: 0rem;*/
+            border-color: gray;
+            border: 2px;
+            border-style: double;
+            padding: 5px;
+            border-radius: 3px;
+        }
+        .row {
+            height: 300px;
+        }
+        .border {
+            width: 100%;
+        }
+        .field {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            flex-direction: column;
+            align-content: space-between;
+            align-items: center;
+        }
+        .field-label {
+            padding-left: 5px;
+        }
+        .graph-container {
+            width: 80%;
+            margin: 0px auto;
+        }
+    </style>
+    {% endblock %}
+</head>
+<body>
+    {% block section %} 
+    <div class="container">
+        <div class="row image">
+            <img src="{% static 'logo-nobg.png' %}" alt="Logo" width="250" height="250">
+        </div>
+
+        
+        <div class="row">
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                    <!--<p class="field-label">Sube una imagen</p>
+                <div class="row"> -->
+                <div class="field">
+                    {{ form.as_p }}
+                    <img id="image_preview" alt="" style="max-width: 200px; max-height: 175px;" >
+                </div>
+                <!--<div class="row"> -->
+                <input class="btn btn-secondary" style="margin-top: 2px" type="submit" value="Enviar">
+                <!-- </div> -->
+            </form>
+        </div>
+
+        <div style="margin-top: 25px;">
+            {{ fig_html | safe }}
+        </div>
+        
+    </div>
+</body>
+    
+<!--input type="file" 
+    onchange="document.getElementById('blah').src = window.URL.createObjectURL(this.files[0])"
+    -->
+<script>
+    // Get a reference to the file input field
+    const fileInput = document.getElementById('id_image_field');
+    const imagePreview = document.getElementById('image_preview');
+
+    fileInput.addEventListener('change', function() {
+        imagePreview.src = url_input.value;
+        imagePreview.alt = url_input.value;
+        // Check if a file has been selected
+        if (fileInput.files.length > 0) {
+            // File has been uploaded
+            const file = fileInput.files[0];
+            if (file.type.startsWith('image/')) {
+                // File is an image
+                // Set the src attribute to the selected file
+                imagePreview.src = URL.createObjectURL(file);
+                imagePreview.alt = file.name;
+                // Add the <img> element to the image container
+                console.log('Selected file is an image');
+            } else {
+                // File is not an image
+                console.log('Selected file is not an image');
+            }
+        } else {
+            // No file selected
+            console.log('No file selected');
+        }
+    });
+
+    url_input = document.getElementById('id_image_url');
+
+    url_input.addEventListener('change', function() {
+        // If file input is empty, set the preview to the URL input
+        imagePreview.alt = url_input.value;
+        if (fileInput.files.length === 0)
+            imagePreview.src = url_input.value;
+    });
+</script>
+    {% endblock section %}
+</body>
+</html>
